@@ -53,3 +53,13 @@ If you want, I can now:
 	•	Make it more technical (for engineering evaluation)
 	•	Make it shorter and cleaner for GitHub
 	•	Or add a simple system architecture diagram section 🚀
+
+
+	
+![20260126_141422(1)](https://github.com/user-attachments/assets/eb643ae4-da2c-4c32-abfa-7516097d6c14)
+![20260127_131415](https://github.com/user-attachments/assets/e9dd63b6-a81c-40c8-a34d-2f2089ea5b3c)
+
+
+
+
+	
