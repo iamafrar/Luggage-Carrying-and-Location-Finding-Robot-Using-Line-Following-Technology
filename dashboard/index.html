@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Robot Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <div class="bg"></div>
+
+    <header class="topbar">
+        <div class="titleWrap">
+            <div class="appIcon">🤖</div>
+            <div>
+                <div class="title">Airport Luggage Carrying Robot's</div>
+                <div class="subtitle">Realtime Dashboard</div>
+            </div>
+        </div>
+
+        <div class="pill" id="connectionPill">
+            <span class="dot" id="connDot"></span>
+            <span id="connectionText">CONNECTING</span>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- STATUS CARD -->
+        <section class="card">
+            <div class="cardHeader">
+                <h2>Status</h2>
+                <span class="chip" id="modeChip">--</span>
+            </div>
+
+            <div class="stats">
+                <div class="stat">
+                    <div class="label">Current</div>
+                    <div class="value" id="currentLocation">--</div>
+                </div>
+                <div class="stat">
+                    <div class="label">Destination</div>
+                    <div class="value" id="destination">--</div>
+                </div>
+
+                <div class="stat">
+                    <div class="label">RFID</div>
+                    <div class="value" id="rfidStatus">--</div>
+                </div>
+                <div class="stat" id="weightStat">
+                    <div class="label">Weight</div>
+                    <div class="value">
+                        <span id="weightKg">--</span><span class="unit"> kg</span>
+                    </div>
+                </div>
+
+                <!-- <div class="stat">
+                    <div class="label">Obstacle</div>
+                    <div class="value" id="obstacle">--</div>
+                </div> -->
+                <div class="stat">
+                    <div class="label">Updated</div>
+                    <div class="value" id="updatedAt">--</div>
+                </div>
+            </div>
+
+            <div class="messageBox" id="statusBox">
+                <div class="messageTitle">Robot Message</div>
+                <div class="messageText" id="statusText">--</div>
+            </div>
+
+            <!-- Enhanced Weight Warning -->
+            <div class="alert hidden" id="warning">
+                <div class="alertIcon">⚠️</div>
+                <div>
+                    <div class="alertTitle">⚖️ Overweight Warning!</div>
+                    <div class="alertText" id="warningText">Maximum weight limit is 1.0 kg. Please reduce the weight
+                        immediately.</div>
+                </div>
+            </div>
+
+            <!-- Critical Weight Alert -->
+            <div class="alert critical hidden" id="criticalWarning">
+                <div class="alertIcon">🚨</div>
+                <div>
+                    <div class="alertTitle">🛑 CRITICAL OVERLOAD!</div>
+                    <div class="alertText" id="criticalText">Weight exceeds safe limits! Robot may stop. Remove items
+                        now!</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTROLS CARD -->
+        <section class="card">
+            <div class="cardHeader">
+                <h2>Controls</h2>
+                <span class="chip subtle">robot/command</span>
+            </div>
+
+            <div class="buttonGrid">
+                <button class="btn primary" onclick="sendCommand('START_TRIP')">
+                    <span class="btnIcon">▶️</span>
+                    <span>Start</span>
+                </button>
+
+                <button class="btn" onclick="sendCommand('STOP')">
+                    <span class="btnIcon">⏸️</span>
+                    <span>Stop</span>
+                </button>
+
+                <button class="btn" onclick="sendCommand('RETURN_TO_START')">
+                    <span class="btnIcon">↩️</span>
+                    <span>Return</span>
+                </button>
+
+                <button class="btn danger" onclick="sendCommand('EMERGENCY_STOP')">
+                    <span class="btnIcon">🛑</span>
+                    <span>Emergency</span>
+                </button>
+            </div>
+
+            <div class="lastCmd">
+                <div class="label">Last Command</div>
+                <div class="value" id="lastCmd">--</div>
+            </div>
+        </section>
+
+        <!-- MANUAL CONTROL CARD -->
+        <section class="card">
+            <div class="cardHeader">
+                <h2>Manual Control</h2>
+                <span class="chip subtle">robot/movement</span>
+            </div>
+
+            <div class="controlPad">
+                <div class="controlBtn empty"></div>
+                <button class="controlBtn" onclick="sendMovement('FORWARD')" title="Move Forward">▲</button>
+                <div class="controlBtn empty"></div>
+
+                <button class="controlBtn" onclick="sendMovement('LEFT')" title="Turn Left">◄</button>
+                <button class="controlBtn stop" onclick="sendMovement('STOP')" title="Stop">■</button>
+                <button class="controlBtn" onclick="sendMovement('RIGHT')" title="Turn Right">►</button>
+
+                <div class="controlBtn empty"></div>
+                <button class="controlBtn" onclick="sendMovement('BACKWARD')" title="Move Backward">▼</button>
+                <div class="controlBtn empty"></div>
+            </div>
+
+            <div class="speedControl">
+                <!--<div class="speedLabel">
+                    <span class="label">Speed</span>
+                    <span class="speedValue" id="speedValue">50%</span>
+                </div>-->
+                <input type="range" class="speedSlider" id="speedSlider" min="0" max="100" value="50">
+            </div>
+
+            <div class="directionIndicator" id="directionStatus">
+                Stopped
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <span> <b>Project By •</b> <code>Afrar</code><b>,</b> <code>Nasrullah</code> <b>&</b> <code>Aflal</code></span>
+    </footer>
+
+    <!-- Weight Alert Modal (appears when overweight) -->
+    <div class="modal hidden" id="weightModal">
+        <div class="modalContent">
+            <div class="modalHeader">
+                <span class="modalIcon">⚖️</span>
+                <h3>Weight Limit Exceeded</h3>
+            </div>
+            <div class="modalBody">
+                <p><strong>Maximum Weight:</strong> 1.0 kg</p>
+                <p><strong>Current Weight:</strong> <span id="modalWeight">--</span> kg</p>
+                <p><strong>Excess Weight:</strong> <span id="excessWeight">--</span> kg</p>
+                <div class="modalWarning">
+                    ⚠️ Please reduce the weight immediately to continue operation safely.
+                </div>
+            </div>
+            <button class="modalBtn" onclick="closeWeightModal()">I Understand</button>
+        </div>
+    </div>
+
+    <script type="module" src="script.js"></script>
+</body>
+
+</html>
